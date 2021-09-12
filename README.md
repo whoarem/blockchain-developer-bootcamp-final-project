@@ -2,7 +2,7 @@
 
 ## first idea
 
-It sounds like that the blockchain is kind of a distributed database. It may guarantees data not corrupt but looks not easy and expensive to modify the data.
+It sounds like that the blockchain is kind of a distributed database. It may guarantee data not corrupt but looks not easy and expensive to modify the data.
 
 This might not be a big problem, if the data only deals with transactions about countable asset, otherwise the feature that the original data can't be modified is (in my opinion) way too much.
 
