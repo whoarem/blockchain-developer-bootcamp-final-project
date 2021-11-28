@@ -1,5 +1,5 @@
 import { ethers } from 'hardhat'
-import { address } from './memo'
+import { address } from '../client/src/memo'
 
 const main = async () => {
   const accounts = await ethers.provider.listAccounts()
@@ -7,6 +7,7 @@ const main = async () => {
 
   const Drawing = await ethers.getContractFactory('Drawing')
   const dwg = Drawing.attach(address)
+  console.log(address)
 
   await dwg.mint(accounts[0])
   const items = await dwg.balanceOf(accounts[0])

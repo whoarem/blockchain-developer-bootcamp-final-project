@@ -1,5 +1,5 @@
 import { ethers, upgrades } from 'hardhat'
-import { address } from './memo'
+import { address } from '../client/src/memo'
 
 const main = async () => {
   const Drawing = await ethers.getContractFactory('Drawing')
