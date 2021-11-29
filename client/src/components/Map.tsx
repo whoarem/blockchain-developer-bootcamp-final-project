@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import L, { LeafletMouseEvent } from 'leaflet'
-import axios, { AxiosResponse } from 'axios'
 import styled from 'styled-components'
 
 import {
@@ -8,8 +7,9 @@ import {
   Stadia_AlidadeSmooth,
   Stadia_AlidadeSmoothDark,
 } from './mapConfig'
-import DarkModeButton from './DarkModeButton'
-import { DrawLine, getEmptyFC, Load, Save } from './mapUtils'
+
+import Tools, { DrawLine, getEmptyFC, Load, Save } from './mapUtils'
+import DarkmodeButton from './DarkmodeButton'
 
 const MapBox = styled.div`
   width: 100%;
@@ -20,7 +20,7 @@ const MapBox = styled.div`
 const tileMaps = (isDarkMode: boolean): L.TileLayer =>
   isDarkMode ? Stadia_AlidadeSmoothDark : Stadia_AlidadeSmooth
 
-function Map() {
+function Map({ accountLoggedIn }: { accountLoggedIn: boolean }) {
   const [lmapObj, setLmapObj] = useState<L.Map>()
   const [isDarkmode, setDarkmode] = useState(true)
   const [currentTileMap, setTileMap] = useState<L.TileLayer>()
@@ -118,10 +118,17 @@ function Map() {
         id="map"
         style={{ cursor: drawLineMode ? 'crosshair' : 'default' }}
       />
-      <DarkModeButton isDarkMode={isDarkmode} setDarkMode={setDarkmode} />
-      <DrawLine isDarkMode={isDarkmode} setDrawLineMode={setDrawLineMode} />
-      <Save isDarkMode={isDarkmode} drawingData={drawingData} />
-      <Load isDarkMode={isDarkmode} setDrawingData={setDrawingData} />
+      <DarkmodeButton isDarkmode={isDarkmode} setDarkmode={setDarkmode} />
+      {/* <DrawLine isDarkmode={isDarkmode} setDrawLineMode={setDrawLineMode} />
+      <Save isDarkmode={isDarkmode} drawingData={drawingData} />
+      <Load isDarkmode={isDarkmode} setDrawingData={setDrawingData} /> */}
+      <Tools
+        isDarkmode={isDarkmode}
+        accountLoggedIn={accountLoggedIn}
+        setDrawLineMode={setDrawLineMode}
+        drawingData={drawingData}
+        setDrawingData={setDrawingData}
+      />
     </>
   )
 }

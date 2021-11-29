@@ -8,18 +8,20 @@ export const getEmptyFC = (): GeoJSON.FeatureCollection => ({
   features: [],
 })
 
-type ToolButtonProps = {
-  isDarkMode: boolean
+type ToolButtonCommonProps = {
+  isDarkmode: boolean
+  accountLoggedIn: boolean
+}
+
+type DrawLineProps = {
+  setDrawLineMode: any
 }
 
 export const DrawLine = ({
-  isDarkMode,
-  // setDrawingData,
+  isDarkmode,
+  accountLoggedIn,
   setDrawLineMode,
-}: ToolButtonProps & {
-  // setDrawingData: any
-  setDrawLineMode: any
-}) => {
+}: ToolButtonCommonProps & DrawLineProps) => {
   return (
     <div
       style={{
@@ -32,7 +34,8 @@ export const DrawLine = ({
     >
       <Button
         variant="contained"
-        color={isDarkMode ? 'inherit' : 'primary'}
+        disabled={!accountLoggedIn}
+        color={isDarkmode ? 'inherit' : 'primary'}
         onClick={(e) => {
           // drawLineMode(setDrawingData)
           setDrawLineMode(true)
@@ -44,12 +47,13 @@ export const DrawLine = ({
   )
 }
 
-// export const drawLineMode = async (setDrawingData: any) => {}
+type LoadProps = { setDrawingData: any }
 
 export const Load = ({
-  isDarkMode,
+  isDarkmode,
+  accountLoggedIn,
   setDrawingData,
-}: ToolButtonProps & { setDrawingData: any }) => {
+}: ToolButtonCommonProps & LoadProps) => {
   return (
     <div
       style={{
@@ -62,7 +66,8 @@ export const Load = ({
     >
       <Button
         variant="contained"
-        color={isDarkMode ? 'inherit' : 'primary'}
+        disabled={!accountLoggedIn}
+        color={isDarkmode ? 'inherit' : 'primary'}
         onClick={(e) => {
           loadDrawing(
             'QmXScCiJ1uoaMajPE9KKGcEkeUKri2Piu81ta3GuhweUBL',
@@ -108,12 +113,14 @@ const readDataFromIpfs = async (cid: string) => {
   return JSON.parse(data)
 }
 
-export const Save = ({
-  isDarkMode,
-  drawingData,
-}: ToolButtonProps & {
+type SaveProps = {
   drawingData: GeoJSON.FeatureCollection | undefined
-}) => {
+}
+export const Save = ({
+  isDarkmode,
+  accountLoggedIn,
+  drawingData,
+}: ToolButtonCommonProps & SaveProps) => {
   return (
     <div
       style={{
@@ -126,7 +133,8 @@ export const Save = ({
     >
       <Button
         variant="contained"
-        color={isDarkMode ? 'inherit' : 'primary'}
+        disabled={!accountLoggedIn}
+        color={isDarkmode ? 'inherit' : 'primary'}
         onClick={() => {
           if (drawingData && drawingData.features.length)
             saveDrawing(drawingData)
@@ -160,4 +168,32 @@ const putDataToIpfs = async (data: object) => {
 
   // console.log(results)
   return results.path
+}
+
+export default function Tools({
+  isDarkmode,
+  setDrawLineMode,
+  drawingData,
+  setDrawingData,
+  accountLoggedIn,
+}: ToolButtonCommonProps & DrawLineProps & LoadProps & SaveProps) {
+  return (
+    <>
+      <DrawLine
+        isDarkmode={isDarkmode}
+        accountLoggedIn={accountLoggedIn}
+        setDrawLineMode={setDrawLineMode}
+      />
+      <Save
+        isDarkmode={isDarkmode}
+        accountLoggedIn={accountLoggedIn}
+        drawingData={drawingData}
+      />
+      <Load
+        isDarkmode={isDarkmode}
+        accountLoggedIn={accountLoggedIn}
+        setDrawingData={setDrawingData}
+      />
+    </>
+  )
 }
