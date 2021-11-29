@@ -3,11 +3,23 @@ import CreateIcon from '@material-ui/icons/Create'
 import SaveIcon from '@material-ui/icons/Save'
 import LoadIcon from '@material-ui/icons/Category'
 
+export const getEmptyFC = (): GeoJSON.FeatureCollection => ({
+  type: 'FeatureCollection',
+  features: [],
+})
+
 type ToolButtonProps = {
   isDarkMode: boolean
 }
 
-export const DrawLine = ({ isDarkMode }: ToolButtonProps) => {
+export const DrawLine = ({
+  isDarkMode,
+  // setDrawingData,
+  setDrawLineMode,
+}: ToolButtonProps & {
+  // setDrawingData: any
+  setDrawLineMode: any
+}) => {
   return (
     <div
       style={{
@@ -21,7 +33,10 @@ export const DrawLine = ({ isDarkMode }: ToolButtonProps) => {
       <Button
         variant="contained"
         color={isDarkMode ? 'inherit' : 'primary'}
-        onClick={useDrawLine}
+        onClick={(e) => {
+          // drawLineMode(setDrawingData)
+          setDrawLineMode(true)
+        }}
       >
         <CreateIcon />
       </Button>
@@ -29,9 +44,12 @@ export const DrawLine = ({ isDarkMode }: ToolButtonProps) => {
   )
 }
 
-export const useDrawLine = async () => {}
+// export const drawLineMode = async (setDrawingData: any) => {}
 
-export const Load = ({ isDarkMode }: ToolButtonProps) => {
+export const Load = ({
+  isDarkMode,
+  setDrawingData,
+}: ToolButtonProps & { setDrawingData: any }) => {
   return (
     <div
       style={{
@@ -46,7 +64,10 @@ export const Load = ({ isDarkMode }: ToolButtonProps) => {
         variant="contained"
         color={isDarkMode ? 'inherit' : 'primary'}
         onClick={(e) => {
-          loadDrawing('QmbQaSg1vgDf59f22jkgfPxVRM6Zsz3NScPuhgdnFQEz6a')
+          loadDrawing(
+            'QmXScCiJ1uoaMajPE9KKGcEkeUKri2Piu81ta3GuhweUBL',
+            setDrawingData
+          )
         }}
       >
         <LoadIcon />
@@ -55,12 +76,16 @@ export const Load = ({ isDarkMode }: ToolButtonProps) => {
   )
 }
 
-const loadDrawing = async (url: string) => {
+const loadDrawing = async (url: string, setDrawingData: any) => {
   const cid = url.split('/').slice(-1)[0]
-  let dwg
+  let features
   try {
-    dwg = await readDataFromIpfs(cid)
+    features = await readDataFromIpfs(cid)
     // console.log(cid)
+    setDrawingData({
+      ...getEmptyFC(),
+      features,
+    })
   } catch (error) {
     console.log(error)
     alert('Something wrong with path of drawing.')
@@ -80,10 +105,15 @@ const readDataFromIpfs = async (cid: string) => {
   }
 
   // console.log(data)
-  return data
+  return JSON.parse(data)
 }
 
-export const Save = ({ isDarkMode }: ToolButtonProps) => {
+export const Save = ({
+  isDarkMode,
+  drawingData,
+}: ToolButtonProps & {
+  drawingData: GeoJSON.FeatureCollection | undefined
+}) => {
   return (
     <div
       style={{
@@ -97,7 +127,10 @@ export const Save = ({ isDarkMode }: ToolButtonProps) => {
       <Button
         variant="contained"
         color={isDarkMode ? 'inherit' : 'primary'}
-        onClick={saveDrawing}
+        onClick={() => {
+          if (drawingData && drawingData.features.length)
+            saveDrawing(drawingData)
+        }}
       >
         <SaveIcon />
       </Button>
@@ -105,11 +138,11 @@ export const Save = ({ isDarkMode }: ToolButtonProps) => {
   )
 }
 
-export const saveDrawing = async (dwg: object) => {
+export const saveDrawing = async (dwg: GeoJSON.FeatureCollection) => {
   let cid
   try {
-    cid = await putDataToIpfs(dwg)
-    // console.log(cid)
+    cid = await putDataToIpfs(dwg.features)
+    console.log(cid)
   } catch (error) {
     console.log(error)
     alert('Your drawing has not changed.')

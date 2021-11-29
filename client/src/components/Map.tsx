@@ -9,7 +9,7 @@ import {
   Stadia_AlidadeSmoothDark,
 } from './mapConfig'
 import DarkModeButton from './DarkModeButton'
-import { DrawLine, Load, Save } from './mapUtils'
+import { DrawLine, getEmptyFC, Load, Save } from './mapUtils'
 
 const MapBox = styled.div`
   width: 100%;
@@ -24,10 +24,14 @@ function Map() {
   const [lmapObj, setLmapObj] = useState<L.Map>()
   const [isDarkmode, setDarkmode] = useState(true)
   const [currentTileMap, setTileMap] = useState<L.TileLayer>()
+
+  const [drawingData, setDrawingData] = useState<GeoJSON.FeatureCollection>()
+  const [drawLineMode, setDrawLineMode] = useState<boolean>()
+
   const dataStyle = useMemo(
     () => ({
       color: isDarkmode ? '#69acf8' : '#4b4444',
-      weight: 1,
+      weight: 1.5,
     }),
     [isDarkmode]
   )
@@ -36,6 +40,18 @@ function Map() {
     if (lmapObj && currentTileMap) {
       lmapObj.removeLayer(tileMaps(!isDarkmode))
       setTileMap(tileMaps(isDarkmode))
+
+      if (drawingData && lmapObj) {
+        lmapObj.eachLayer((layer: any) => {
+          // console.log(layer.feature ? true : false)
+          if (layer.feature) {
+            lmapObj.removeLayer(layer)
+          }
+        })
+        // console.log(drawingData)
+        const dataLayer = L.geoJSON(drawingData, { style: dataStyle })
+        dataLayer.addTo(lmapObj)
+      }
     }
   }, [isDarkmode, lmapObj])
 
@@ -53,13 +69,59 @@ function Map() {
     setTileMap(tileMaps(isDarkmode))
   }, [])
 
+  useEffect(() => {
+    if (drawLineMode && lmapObj) {
+      lmapObj.once('click', (e: LeafletMouseEvent) => {
+        // console.log(e.latlng)
+        const { lat: lat_1, lng: lng_1 } = e.latlng
+        const m = L.marker(e.latlng)
+        m.addTo(lmapObj)
+        lmapObj.once('click', (e: LeafletMouseEvent) => {
+          const { lat: lat_2, lng: lng_2 } = e.latlng
+          const fc = drawingData ? { ...drawingData } : getEmptyFC()
+          fc.features.push({
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: [
+                [lng_1, lat_1],
+                [lng_2, lat_2],
+              ],
+            },
+            properties: {},
+          })
+          setDrawingData(fc)
+          lmapObj.removeLayer(m)
+          setDrawLineMode(false)
+        })
+      })
+    }
+  }, [drawLineMode])
+
+  useEffect(() => {
+    if (drawingData && lmapObj) {
+      lmapObj.eachLayer((layer: any) => {
+        // console.log(layer.feature ? true : false)
+        if (layer.feature) {
+          lmapObj.removeLayer(layer)
+        }
+      })
+      console.log(drawingData)
+      const dataLayer = L.geoJSON(drawingData, { style: dataStyle })
+      dataLayer.addTo(lmapObj)
+    }
+  }, [drawingData])
+
   return (
     <>
-      <MapBox id="map" />
+      <MapBox
+        id="map"
+        style={{ cursor: drawLineMode ? 'crosshair' : 'default' }}
+      />
       <DarkModeButton isDarkMode={isDarkmode} setDarkMode={setDarkmode} />
-      <DrawLine isDarkMode={isDarkmode} />
-      <Save isDarkMode={isDarkmode} />
-      <Load isDarkMode={isDarkmode} />
+      <DrawLine isDarkMode={isDarkmode} setDrawLineMode={setDrawLineMode} />
+      <Save isDarkMode={isDarkmode} drawingData={drawingData} />
+      <Load isDarkMode={isDarkmode} setDrawingData={setDrawingData} />
     </>
   )
 }
