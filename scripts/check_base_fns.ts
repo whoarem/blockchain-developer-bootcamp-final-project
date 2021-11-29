@@ -9,17 +9,25 @@ const main = async () => {
   const dwg = Drawing.attach(address)
   console.log(address)
 
-  await dwg.mint(accounts[0])
+  // await dwg.mint(accounts[0])
+  await dwg.commitDrawing(
+    accounts[0],
+    'QmXScCiJ1uoaMajPE9KKGcEkeUKri2Piu81ta3GuhweUBL'
+  )
+
   const items = await dwg.balanceOf(accounts[0])
   console.log(items.toString())
-  console.log(await dwg.tokenURI(parseInt(items.toString()) - 1))
-  console.log(await dwg.ownerOf(parseInt(items.toString()) - 1))
-  console.log(await dwg.name())
-  console.log(await dwg.symbol())
-  console.log((await dwg.totalSupply()).toString())
-  console.log(await dwg.tokenByIndex(parseInt(items.toString()) - 1))
-  console.log(await dwg.test())
-  console.log(await dwg.test2())
+  const itemsCount = parseInt(items.toString())
+  if (itemsCount !== 0) {
+    console.log(await dwg.tokenURI(itemsCount - 1))
+    console.log(await dwg.ownerOf(itemsCount - 1))
+    console.log(await dwg.name())
+    console.log(await dwg.symbol())
+    console.log((await dwg.totalSupply()).toString())
+    console.log(await dwg.tokenByIndex(itemsCount - 1))
+    console.log(await dwg.test())
+    console.log(await dwg.test2())
+  }
 }
 
 main().catch((error) => {

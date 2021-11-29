@@ -8,7 +8,9 @@
     "test": "hardhat test",
     "run_test_node": "hardhat node",
     "deploy:local": "hardhat run --network localhost scripts/deploy.ts",
-    "upgrade:local": "hardhat run --network localhost scripts/upgrade.ts"
+    "deploy:ropsten": "hardhat run --network ropsten scripts/deploy.ts",
+    "upgrade:local": "hardhat run --network localhost scripts/upgrade.ts",
+    "upgrade:ropsten": "hardhat run --network ropsten scripts/upgrade.ts"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
@@ -43,5 +45,8 @@
     "ts-node": "^10.1.0",
     "typechain": "^5.1.2",
     "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.4.0"
   }
 }

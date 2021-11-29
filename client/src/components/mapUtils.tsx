@@ -2,6 +2,7 @@ import { Button } from '@material-ui/core'
 import CreateIcon from '@material-ui/icons/Create'
 import SaveIcon from '@material-ui/icons/Save'
 import LoadIcon from '@material-ui/icons/Category'
+import { useDrawingC, useEtherium } from './contracts'
 
 export const getEmptyFC = (): GeoJSON.FeatureCollection => ({
   type: 'FeatureCollection',
@@ -121,6 +122,9 @@ export const Save = ({
   accountLoggedIn,
   drawingData,
 }: ToolButtonCommonProps & SaveProps) => {
+  const { account } = useEtherium()
+  const { createDrawingToken } = useDrawingC()
+
   return (
     <div
       style={{
@@ -137,7 +141,7 @@ export const Save = ({
         color={isDarkmode ? 'inherit' : 'primary'}
         onClick={() => {
           if (drawingData && drawingData.features.length)
-            saveDrawing(drawingData)
+            saveDrawing(drawingData, account, createDrawingToken)
         }}
       >
         <SaveIcon />
@@ -146,11 +150,18 @@ export const Save = ({
   )
 }
 
-export const saveDrawing = async (dwg: GeoJSON.FeatureCollection) => {
+const saveDrawing = async (
+  dwg: GeoJSON.FeatureCollection,
+  account: any,
+  createDrawingToken: any
+) => {
   let cid
   try {
     cid = await putDataToIpfs(dwg.features)
     console.log(cid)
+    if (account) {
+      createDrawingToken(account[0], cid)
+    }
   } catch (error) {
     console.log(error)
     alert('Your drawing has not changed.')

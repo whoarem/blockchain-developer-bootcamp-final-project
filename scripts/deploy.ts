@@ -4,7 +4,7 @@ import { memoAddress } from './util'
 const main = async () => {
   const Drawing = await ethers.getContractFactory('Drawing')
   console.log('Deploying Drawing...')
-  const dwg = await upgrades.deployProxy(Drawing, ['Drawing', 'DWG', 'dwg_uri'])
+  const dwg = await upgrades.deployProxy(Drawing, ['Drawing', 'DWG', 'dwg_'])
   await dwg.deployed()
   console.log('Drawing deployed to:', dwg.address)
   return dwg.address
