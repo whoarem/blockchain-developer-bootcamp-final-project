@@ -9,7 +9,7 @@ import {
   Stadia_AlidadeSmoothDark,
 } from './mapConfig'
 import DarkModeButton from './DarkModeButton'
-import { DrawLine } from './mapUtils'
+import { DrawLine, Load, Save } from './mapUtils'
 
 const MapBox = styled.div`
   width: 100%;
@@ -58,6 +58,8 @@ function Map() {
       <MapBox id="map" />
       <DarkModeButton isDarkMode={isDarkmode} setDarkMode={setDarkmode} />
       <DrawLine isDarkMode={isDarkmode} />
+      <Save isDarkMode={isDarkmode} />
+      <Load isDarkMode={isDarkmode} />
     </>
   )
 }
