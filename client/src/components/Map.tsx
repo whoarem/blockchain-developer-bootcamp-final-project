@@ -9,6 +9,7 @@ import {
   Stadia_AlidadeSmoothDark,
 } from './mapConfig'
 import DarkModeButton from './DarkModeButton'
+import { DrawLine } from './mapUtils'
 
 const MapBox = styled.div`
   width: 100%;
@@ -44,6 +45,7 @@ function Map() {
     }
   }, [currentTileMap, lmapObj])
 
+  // initialize leaflet map object
   useEffect(() => {
     const lmap = L.map('map', initOption)
     setLmapObj(lmap)
@@ -55,6 +57,7 @@ function Map() {
     <>
       <MapBox id="map" />
       <DarkModeButton isDarkMode={isDarkmode} setDarkMode={setDarkmode} />
+      <DrawLine isDarkMode={isDarkmode} />
     </>
   )
 }
