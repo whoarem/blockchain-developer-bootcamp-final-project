@@ -13,14 +13,6 @@ contract Drawing is
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private _tokenIdTracker;
 
-    // function test() public pure returns (string memory) {
-    //     return StringsUpgradeable.toString(1);
-    // }
-
-    // function test2() public pure returns (string memory) {
-    //     return StringsUpgradeable.toString(2);
-    // }
-
     mapping(uint256 => string) private _tokenId_Cid_Map;
 
     function commitDrawing(address _to, string memory _cid) public {

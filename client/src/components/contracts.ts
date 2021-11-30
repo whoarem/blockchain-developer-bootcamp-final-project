@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import Drawing from '../artifacts/contracts/Drawing.sol/Drawing.json'
 import { address } from '../memo'
 
-console.log(process.env)
+// console.log(process.env)
 
 export const checkEtherium = async (
   window: any,
@@ -79,7 +79,9 @@ export const useEtherium = () => {
       chainId &&
       [3, 1337].indexOf(chainId) === -1
     )
-      alert('Connect your account with metamask on Ropsten network.')
+      if (process.env.NODE_ENV === 'production')
+        alert('Connect your account with metamask on Ropsten network.')
+      else alert('Connect your account with metamask on local network.')
   }, [accountLoggedIn, account, chainId, signer])
 
   return { accountLoggedIn, account, chainId, signer }

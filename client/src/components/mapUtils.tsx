@@ -84,12 +84,11 @@ export const Load = ({
   )
 }
 
-const loadDrawing = async (url: string, setDrawingData: any) => {
-  const cid = url.split('/').slice(-1)[0]
+const loadDrawing = async (cid: string, setDrawingData: any) => {
   let features
   try {
     features = await readDataFromIpfs(cid)
-    // console.log(cid)
+    console.log(features)
     setDrawingData({
       ...getEmptyFC(),
       features,
@@ -124,7 +123,7 @@ export const Save = ({
   accountLoggedIn,
   drawingData,
 }: ToolButtonCommonProps & SaveProps) => {
-  const { account } = useEtherium()
+  const { account, chainId } = useEtherium()
   const { createDrawingToken } = useDrawingC()
 
   return (
@@ -142,8 +141,19 @@ export const Save = ({
         disabled={!accountLoggedIn}
         color={isDarkmode ? 'inherit' : 'primary'}
         onClick={() => {
-          if (drawingData && drawingData.features.length)
+          if (
+            process.env.NODE_ENV === 'production' &&
+            chainId !== parseInt(process.env.REACT_APP_NETWORK_ID as string)
+          ) {
+            alert('Connect your account with metamask on Ropsten network.')
+          } else if (
+            process.env.NODE_ENV === 'development' &&
+            chainId !== 1337
+          ) {
+            alert('Connect your account with metamask on local network.')
+          } else if (drawingData && drawingData.features.length) {
             saveDrawing(drawingData, account, createDrawingToken)
+          }
         }}
       >
         <SaveIcon />
