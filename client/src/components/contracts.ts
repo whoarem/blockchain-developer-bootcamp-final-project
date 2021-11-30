@@ -4,6 +4,8 @@ import { ethers } from 'ethers'
 import Drawing from '../artifacts/contracts/Drawing.sol/Drawing.json'
 import { address } from '../memo'
 
+console.log(process.env)
+
 export const checkEtherium = async (
   window: any,
   setAccount: any,
@@ -86,11 +88,28 @@ export const useEtherium = () => {
 export const useDrawingC = () => {
   const { account, signer } = useEtherium()
   const dwg = new ethers.Contract(address, Drawing.abi, signer)
-  // dwg.mint(account).then(dwg.tokenURI(0).then(console.log))
+  // console.log(Drawing)
+  // console.log(signer)
+  // console.log(dwg)
+
   const createDrawingToken = async (toAccount: string, cid: string) => {
     const tr = await dwg.commitDrawing(toAccount, cid)
     console.log(tr)
   }
 
-  return { createDrawingToken }
+  const getMyDrawings = async () => {
+    try {
+      const res = await dwg.getMyDrawings()
+      console.log(res)
+      return res
+    } catch (error) {
+      console.log(error)
+      alert(
+        `Can't find the contract. Maybe you should change your eth network to Ropsten or localhost`
+      )
+      return []
+    }
+  }
+
+  return { createDrawingToken, getMyDrawings }
 }

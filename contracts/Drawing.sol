@@ -13,13 +13,13 @@ contract Drawing is
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private _tokenIdTracker;
 
-    function test() public pure returns (string memory) {
-        return StringsUpgradeable.toString(1);
-    }
+    // function test() public pure returns (string memory) {
+    //     return StringsUpgradeable.toString(1);
+    // }
 
-    function test2() public pure returns (string memory) {
-        return StringsUpgradeable.toString(2);
-    }
+    // function test2() public pure returns (string memory) {
+    //     return StringsUpgradeable.toString(2);
+    // }
 
     mapping(uint256 => string) private _tokenId_Cid_Map;
 
@@ -27,5 +27,17 @@ contract Drawing is
         _safeMint(_to, _tokenIdTracker.current());
         _tokenId_Cid_Map[_tokenIdTracker.current()] = _cid;
         _tokenIdTracker.increment();
+    }
+
+    function getMyDrawings() public view returns (string[] memory) {
+        uint256 myDwgCounts = balanceOf(msg.sender);
+        string[] memory myDrawings = new string[](myDwgCounts);
+
+        for (uint256 i = 0; i < myDwgCounts; i++) {
+            uint256 _tokenId = tokenOfOwnerByIndex(msg.sender, i);
+            myDrawings[i] = _tokenId_Cid_Map[_tokenId];
+        }
+
+        return myDrawings;
     }
 }

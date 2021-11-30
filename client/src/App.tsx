@@ -1,6 +1,7 @@
 // import React, { useEffect, useState } from 'react'
 // import { ethers } from 'ethers'
 import { useEtherium } from './components/contracts'
+import LoginMessage from './components/LoginMessage'
 
 import Map from './components/Map'
 
@@ -9,7 +10,11 @@ function App() {
 
   return (
     <div className="App">
-      <Map accountLoggedIn={accountLoggedIn} />
+      {accountLoggedIn ? (
+        <Map accountLoggedIn={accountLoggedIn} />
+      ) : (
+        <LoginMessage />
+      )}
     </div>
   )
 }

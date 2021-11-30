@@ -55,6 +55,8 @@ export const Load = ({
   accountLoggedIn,
   setDrawingData,
 }: ToolButtonCommonProps & LoadProps) => {
+  const { getMyDrawings } = useDrawingC()
+
   return (
     <div
       style={{
@@ -69,11 +71,11 @@ export const Load = ({
         variant="contained"
         disabled={!accountLoggedIn}
         color={isDarkmode ? 'inherit' : 'primary'}
-        onClick={(e) => {
-          loadDrawing(
-            'QmXScCiJ1uoaMajPE9KKGcEkeUKri2Piu81ta3GuhweUBL',
-            setDrawingData
-          )
+        onClick={async () => {
+          const cids = await getMyDrawings()
+          if (cids.length) {
+            loadDrawing(cids[0], setDrawingData)
+          }
         }}
       >
         <LoadIcon />

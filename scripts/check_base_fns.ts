@@ -25,8 +25,6 @@ const main = async () => {
     console.log(await dwg.symbol())
     console.log((await dwg.totalSupply()).toString())
     console.log(await dwg.tokenByIndex(itemsCount - 1))
-    console.log(await dwg.test())
-    console.log(await dwg.test2())
   }
 }
 
