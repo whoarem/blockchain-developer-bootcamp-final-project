@@ -72,6 +72,10 @@ yarn start
 
 ```
 
+## Tests
+```sh
+yarn test
+```
 
 ## eth account for certificate(hopefully)
 
