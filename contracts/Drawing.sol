@@ -13,14 +13,19 @@ contract Drawing is
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private _tokenIdTracker;
 
+    /// @notice Mapping tokenId to ipfs cid of drawing data
     mapping(uint256 => string) private _tokenId_Cid_Map;
 
+    /// @notice Create a token associated with a drawing data on ipfs
+    /// @param _to address of token holder
+    /// @param _cid drawing data ipfs cid
     function commitDrawing(address _to, string memory _cid) public {
         _safeMint(_to, _tokenIdTracker.current());
         _tokenId_Cid_Map[_tokenIdTracker.current()] = _cid;
         _tokenIdTracker.increment();
     }
 
+    /// @notice gets every token cid of msg.sender
     function getMyDrawings() public view returns (string[] memory) {
         uint256 myDwgCounts = balanceOf(msg.sender);
         string[] memory myDrawings = new string[](myDwgCounts);
@@ -29,7 +34,6 @@ contract Drawing is
             uint256 _tokenId = tokenOfOwnerByIndex(msg.sender, i);
             myDrawings[i] = _tokenId_Cid_Map[_tokenId];
         }
-
         return myDrawings;
     }
 }

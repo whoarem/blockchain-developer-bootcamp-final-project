@@ -2,6 +2,10 @@
 
 Create and share drawings like codes.
 
+## Deployed page addresss
+
+https://dwg.jjdd.site
+
 ## Requirements
 
 - nodejs ^16
@@ -62,4 +66,11 @@ cd client
 # from client dir
 yarn start
 
+```
+
+
+## eth account for certificate(hopefully)
+
+```
+0xC0c0e7E7f9ef2500207B29078C96E0f47FB199Eb
 ```
