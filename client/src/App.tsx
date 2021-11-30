@@ -1,5 +1,3 @@
-// import React, { useEffect, useState } from 'react'
-// import { ethers } from 'ethers'
 import { useEtherium } from './components/contracts'
 import LoginMessage from './components/LoginMessage'
 import { app } from './fbConfig'

@@ -119,10 +119,8 @@ function Map({ accountLoggedIn }: { accountLoggedIn: boolean }) {
         style={{ cursor: drawLineMode ? 'crosshair' : 'default' }}
       />
       <DarkmodeButton isDarkmode={isDarkmode} setDarkmode={setDarkmode} />
-      {/* <DrawLine isDarkmode={isDarkmode} setDrawLineMode={setDrawLineMode} />
-      <Save isDarkmode={isDarkmode} drawingData={drawingData} />
-      <Load isDarkmode={isDarkmode} setDrawingData={setDrawingData} /> */}
       <Tools
+        ipfsNode={undefined}
         isDarkmode={isDarkmode}
         accountLoggedIn={accountLoggedIn}
         setDrawLineMode={setDrawLineMode}

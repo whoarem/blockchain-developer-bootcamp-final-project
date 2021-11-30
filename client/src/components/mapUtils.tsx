@@ -3,6 +3,13 @@ import CreateIcon from '@material-ui/icons/Create'
 import SaveIcon from '@material-ui/icons/Save'
 import LoadIcon from '@material-ui/icons/Category'
 import { useDrawingC, useEtherium } from './contracts'
+import { useEffect, useState } from 'react'
+
+// const getRandomIpfsRepo = async () => {
+//   const { Ipfs } = window as any
+//   const node = await Ipfs.create({ repo: 'nanangqq' + Math.random() })
+//   return node
+// }
 
 export const getEmptyFC = (): GeoJSON.FeatureCollection => ({
   type: 'FeatureCollection',
@@ -10,6 +17,7 @@ export const getEmptyFC = (): GeoJSON.FeatureCollection => ({
 })
 
 type ToolButtonCommonProps = {
+  ipfsNode: any
   isDarkmode: boolean
   accountLoggedIn: boolean
 }
@@ -51,6 +59,7 @@ export const DrawLine = ({
 type LoadProps = { setDrawingData: any }
 
 export const Load = ({
+  ipfsNode,
   isDarkmode,
   accountLoggedIn,
   setDrawingData,
@@ -74,7 +83,7 @@ export const Load = ({
         onClick={async () => {
           const cids = await getMyDrawings()
           if (cids.length) {
-            loadDrawing(cids[0], setDrawingData)
+            loadDrawing(cids[cids.length - 1], setDrawingData, ipfsNode)
           }
         }}
       >
@@ -84,10 +93,11 @@ export const Load = ({
   )
 }
 
-const loadDrawing = async (cid: string, setDrawingData: any) => {
+const loadDrawing = async (cid: string, setDrawingData: any, ipfsNode: any) => {
+  console.log(cid)
   let features
   try {
-    features = await readDataFromIpfs(cid)
+    features = await readDataFromIpfs(cid, ipfsNode)
     console.log(features)
     setDrawingData({
       ...getEmptyFC(),
@@ -95,13 +105,14 @@ const loadDrawing = async (cid: string, setDrawingData: any) => {
     })
   } catch (error) {
     console.log(error)
-    alert('Something wrong with path of drawing.')
+    alert('Something wrong while loading drawing.')
   }
 }
 
-const readDataFromIpfs = async (cid: string) => {
-  const { Ipfs } = window as any
-  const node = await Ipfs.create()
+const readDataFromIpfs = async (cid: string, node: any) => {
+  // const { Ipfs } = window as any
+  // const node = await Ipfs.create()
+  // const node = await getRandomIpfsRepo()
 
   const stream = node.cat(cid)
   let data = ''
@@ -118,7 +129,9 @@ const readDataFromIpfs = async (cid: string) => {
 type SaveProps = {
   drawingData: GeoJSON.FeatureCollection | undefined
 }
+
 export const Save = ({
+  ipfsNode,
   isDarkmode,
   accountLoggedIn,
   drawingData,
@@ -152,7 +165,7 @@ export const Save = ({
           ) {
             alert('Connect your account with metamask on local network.')
           } else if (drawingData && drawingData.features.length) {
-            saveDrawing(drawingData, account, createDrawingToken)
+            saveDrawing(drawingData, account, createDrawingToken, ipfsNode)
           }
         }}
       >
@@ -165,25 +178,26 @@ export const Save = ({
 const saveDrawing = async (
   dwg: GeoJSON.FeatureCollection,
   account: any,
-  createDrawingToken: any
+  createDrawingToken: any,
+  ipfsNode: any
 ) => {
   let cid
   try {
-    cid = await putDataToIpfs(dwg.features)
+    cid = await putDataToIpfs(dwg.features, ipfsNode)
     console.log(cid)
     if (account) {
       createDrawingToken(account[0], cid)
     }
   } catch (error) {
     console.log(error)
-    alert('Your drawing has not changed.')
+    alert('Something wrong while saving drawing.')
   }
 }
 
-const putDataToIpfs = async (data: object) => {
-  const { Ipfs } = window as any
-
-  const node = await Ipfs.create()
+const putDataToIpfs = async (data: object, node: any) => {
+  // const { Ipfs } = window as any
+  // const node = await Ipfs.create()
+  // const node = await getRandomIpfsRepo()
 
   // add your data to to IPFS - this can be a string, a Buffer,
   // a stream of Buffers, etc
@@ -200,19 +214,34 @@ export default function Tools({
   setDrawingData,
   accountLoggedIn,
 }: ToolButtonCommonProps & DrawLineProps & LoadProps & SaveProps) {
+  const [ipfsNode, setIpfsNode] = useState<any>()
+
+  useEffect(() => {
+    try {
+      const { Ipfs } = window as any
+      Ipfs.create().then(setIpfsNode)
+    } catch (error) {
+      console.log(error)
+      alert('Something wrong with ipfs. Refreshing page')
+    }
+  }, [])
+
   return (
     <>
       <DrawLine
+        ipfsNode={ipfsNode}
         isDarkmode={isDarkmode}
         accountLoggedIn={accountLoggedIn}
         setDrawLineMode={setDrawLineMode}
       />
       <Save
+        ipfsNode={ipfsNode}
         isDarkmode={isDarkmode}
         accountLoggedIn={accountLoggedIn}
         drawingData={drawingData}
       />
       <Load
+        ipfsNode={ipfsNode}
         isDarkmode={isDarkmode}
         accountLoggedIn={accountLoggedIn}
         setDrawingData={setDrawingData}
