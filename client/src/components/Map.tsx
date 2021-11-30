@@ -100,13 +100,13 @@ function Map({ accountLoggedIn }: { accountLoggedIn: boolean }) {
 
   useEffect(() => {
     if (drawingData && lmapObj) {
+      // clear prev drawing data
       lmapObj.eachLayer((layer: any) => {
-        // console.log(layer.feature ? true : false)
         if (layer.feature) {
           lmapObj.removeLayer(layer)
         }
       })
-      console.log(drawingData)
+
       const dataLayer = L.geoJSON(drawingData, { style: dataStyle })
       dataLayer.addTo(lmapObj)
     }

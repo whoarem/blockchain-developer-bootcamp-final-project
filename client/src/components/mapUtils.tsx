@@ -1,15 +1,11 @@
-import { Button } from '@material-ui/core'
+import { Button, ListItem, ListItemAvatar, Avatar } from '@material-ui/core'
 import CreateIcon from '@material-ui/icons/Create'
 import SaveIcon from '@material-ui/icons/Save'
 import LoadIcon from '@material-ui/icons/Category'
+import DwgIcon from '@material-ui/icons/Gesture'
 import { useDrawingC, useEtherium } from './contracts'
 import { useEffect, useState } from 'react'
-
-// const getRandomIpfsRepo = async () => {
-//   const { Ipfs } = window as any
-//   const node = await Ipfs.create({ repo: 'nanangqq' + Math.random() })
-//   return node
-// }
+import MyDwgsModal from './MyDwgsModal'
 
 export const getEmptyFC = (): GeoJSON.FeatureCollection => ({
   type: 'FeatureCollection',
@@ -65,6 +61,8 @@ export const Load = ({
   setDrawingData,
 }: ToolButtonCommonProps & LoadProps) => {
   const { getMyDrawings } = useDrawingC()
+  const [myDrawingsList, setMyDrawingsList] = useState<Array<any>>()
+  const [isModalOn, setIsModalOn] = useState<boolean>()
 
   return (
     <div
@@ -76,19 +74,44 @@ export const Load = ({
         left: 210,
       }}
     >
-      <Button
-        variant="contained"
-        disabled={!accountLoggedIn}
-        color={isDarkmode ? 'inherit' : 'primary'}
-        onClick={async () => {
-          const cids = await getMyDrawings()
-          if (cids.length) {
-            loadDrawing(cids[cids.length - 1], setDrawingData, ipfsNode)
-          }
-        }}
+      <MyDwgsModal
+        myDrawingsList={myDrawingsList}
+        modalState={{ isModalOn, setIsModalOn }}
       >
-        <LoadIcon />
-      </Button>
+        <Button
+          variant="contained"
+          disabled={!accountLoggedIn}
+          color={isDarkmode ? 'inherit' : 'primary'}
+          onClick={async () => {
+            const cids = await getMyDrawings()
+            if (cids.length) {
+              setMyDrawingsList(
+                cids.map((cid: string) => {
+                  return (
+                    <ListItem>
+                      <Button
+                        onClick={() => {
+                          loadDrawing(cid, setDrawingData, ipfsNode)
+                          setIsModalOn(false)
+                        }}
+                      >
+                        <ListItemAvatar>
+                          <Avatar>
+                            <DwgIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        {cid}
+                      </Button>
+                    </ListItem>
+                  )
+                })
+              )
+            }
+          }}
+        >
+          <LoadIcon />
+        </Button>
+      </MyDwgsModal>
     </div>
   )
 }
