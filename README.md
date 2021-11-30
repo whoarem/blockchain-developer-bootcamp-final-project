@@ -6,6 +6,10 @@ Create and share drawings like codes.
 
 https://dwg.jjdd.site
 
+## Screen-recording
+
+https://drive.google.com/file/d/1U_peWMq4pMI6GO8alMKRZXWSvEulSeAv/view?usp=sharing
+
 ## Requirements
 
 - nodejs ^16
