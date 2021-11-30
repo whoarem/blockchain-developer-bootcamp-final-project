@@ -25,6 +25,11 @@ const main = async () => {
     console.log(await dwg.symbol())
     console.log((await dwg.totalSupply()).toString())
     console.log(await dwg.tokenByIndex(itemsCount - 1))
+    console.log(await dwg.MINTER_ROLE())
+    console.log(await dwg.PAUSER_ROLE())
+    console.log(await dwg.paused())
+    console.log(await dwg.pause())
+    console.log(await dwg.paused())
   }
 }
 
