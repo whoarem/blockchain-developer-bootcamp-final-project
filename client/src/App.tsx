@@ -2,6 +2,7 @@
 // import { ethers } from 'ethers'
 import { useEtherium } from './components/contracts'
 import LoginMessage from './components/LoginMessage'
+import { app } from './fbConfig'
 
 import Map from './components/Map'
 
