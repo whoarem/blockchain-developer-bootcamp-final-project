@@ -26,6 +26,7 @@ contract Drawing is
     }
 
     /// @notice gets every token cid of msg.sender
+    /// @return myDrawings array of msg.sender's token cid
     function getMyDrawings() public view returns (string[] memory) {
         uint256 myDwgCounts = balanceOf(msg.sender);
         string[] memory myDrawings = new string[](myDwgCounts);
@@ -36,4 +37,8 @@ contract Drawing is
         }
         return myDrawings;
     }
+
+    /// @TODO Split contract into tokenGenerator / tokenReader. This contract is too big to add other functions and be compiled.
+
+    /// @TODO Add function getDrawingsByAccount(address _to) public view returns (string[] memory) {}
 }

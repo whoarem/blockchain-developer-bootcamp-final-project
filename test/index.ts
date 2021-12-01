@@ -47,7 +47,7 @@ describe('Drawing', function () {
     expect(totalTokenCount.toString()).to.equal(`${accounts.length}`)
   })
 
-  it('After paused, tokens should not be created.', async () => {
+  it('After paused, tokens should not be created.(Should fail when creating a DWG token after paused.', async () => {
     const Drawing = await ethers.getContractFactory('Drawing')
 
     const accounts = await ethers.provider.listAccounts()

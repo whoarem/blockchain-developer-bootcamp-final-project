@@ -2,6 +2,7 @@ import { Button, ListItem, ListItemAvatar, Avatar } from '@material-ui/core'
 import CreateIcon from '@material-ui/icons/Create'
 import SaveIcon from '@material-ui/icons/Save'
 import LoadIcon from '@material-ui/icons/Category'
+import ClearIcon from '@material-ui/icons/Cancel'
 import DwgIcon from '@material-ui/icons/Gesture'
 import { useDrawingC, useEtherium } from './contracts'
 import { useEffect, useState } from 'react'
@@ -88,7 +89,7 @@ export const Load = ({
               setMyDrawingsList(
                 cids.map((cid: string) => {
                   return (
-                    <ListItem>
+                    <ListItem key={cid}>
                       <Button
                         onClick={() => {
                           loadDrawing(cid, setDrawingData, ipfsNode)
@@ -121,7 +122,7 @@ const loadDrawing = async (cid: string, setDrawingData: any, ipfsNode: any) => {
   let features
   try {
     features = await readDataFromIpfs(cid, ipfsNode)
-    console.log(features)
+    // console.log(features)
     setDrawingData({
       ...getEmptyFC(),
       features,
@@ -133,10 +134,6 @@ const loadDrawing = async (cid: string, setDrawingData: any, ipfsNode: any) => {
 }
 
 const readDataFromIpfs = async (cid: string, node: any) => {
-  // const { Ipfs } = window as any
-  // const node = await Ipfs.create()
-  // const node = await getRandomIpfsRepo()
-
   const stream = node.cat(cid)
   let data = ''
 
@@ -218,10 +215,6 @@ const saveDrawing = async (
 }
 
 const putDataToIpfs = async (data: object, node: any) => {
-  // const { Ipfs } = window as any
-  // const node = await Ipfs.create()
-  // const node = await getRandomIpfsRepo()
-
   // add your data to to IPFS - this can be a string, a Buffer,
   // a stream of Buffers, etc
   const results = await node.add(JSON.stringify(data))
@@ -229,6 +222,37 @@ const putDataToIpfs = async (data: object, node: any) => {
   // console.log(results)
   return results.path
 }
+
+export const Clear = ({
+  isDarkmode,
+  setDrawingData,
+  drawingData,
+}: ToolButtonCommonProps & LoadProps & SaveProps) => {
+  return (
+    <div
+      style={{
+        fontSize: 50,
+        zIndex: 8000,
+        position: 'absolute',
+        bottom: 30,
+        left: 290,
+      }}
+    >
+      <Button
+        variant="contained"
+        disabled={!drawingData}
+        color={isDarkmode ? 'inherit' : 'primary'}
+        onClick={async () => {
+          setDrawingData(undefined)
+        }}
+      >
+        <ClearIcon />
+      </Button>
+    </div>
+  )
+}
+
+// TODO: add tool Search() - look for drawings by account address
 
 export default function Tools({
   isDarkmode,
@@ -267,6 +291,13 @@ export default function Tools({
         ipfsNode={ipfsNode}
         isDarkmode={isDarkmode}
         accountLoggedIn={accountLoggedIn}
+        setDrawingData={setDrawingData}
+      />
+      <Clear
+        ipfsNode={ipfsNode}
+        isDarkmode={isDarkmode}
+        accountLoggedIn={accountLoggedIn}
+        drawingData={drawingData}
         setDrawingData={setDrawingData}
       />
     </>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import L, { LeafletMouseEvent } from 'leaflet'
 import styled from 'styled-components'
 
@@ -8,7 +8,7 @@ import {
   Stadia_AlidadeSmoothDark,
 } from './mapConfig'
 
-import Tools, { DrawLine, getEmptyFC, Load, Save } from './mapUtils'
+import Tools, { getEmptyFC } from './mapUtils'
 import DarkmodeButton from './DarkmodeButton'
 
 const MapBox = styled.div`
@@ -36,6 +36,16 @@ function Map({ accountLoggedIn }: { accountLoggedIn: boolean }) {
     [isDarkmode]
   )
 
+  // initialize leaflet map object
+  useEffect(() => {
+    if (!lmapObj) {
+      const lmap = L.map('map', initOption)
+      setLmapObj(lmap)
+
+      setTileMap(tileMaps(isDarkmode))
+    }
+  }, [])
+
   useEffect(() => {
     if (lmapObj && currentTileMap) {
       lmapObj.removeLayer(tileMaps(!isDarkmode))
@@ -60,14 +70,6 @@ function Map({ accountLoggedIn }: { accountLoggedIn: boolean }) {
       currentTileMap.addTo(lmapObj)
     }
   }, [currentTileMap, lmapObj])
-
-  // initialize leaflet map object
-  useEffect(() => {
-    const lmap = L.map('map', initOption)
-    setLmapObj(lmap)
-
-    setTileMap(tileMaps(isDarkmode))
-  }, [])
 
   useEffect(() => {
     if (drawLineMode && lmapObj) {
@@ -99,16 +101,19 @@ function Map({ accountLoggedIn }: { accountLoggedIn: boolean }) {
   }, [drawLineMode])
 
   useEffect(() => {
-    if (drawingData && lmapObj) {
+    if (lmapObj) {
       // clear prev drawing data
       lmapObj.eachLayer((layer: any) => {
         if (layer.feature) {
           lmapObj.removeLayer(layer)
         }
       })
+    }
 
+    if (drawingData && lmapObj) {
       const dataLayer = L.geoJSON(drawingData, { style: dataStyle })
       dataLayer.addTo(lmapObj)
+    } else if (!drawingData && lmapObj) {
     }
   }, [drawingData])
 
