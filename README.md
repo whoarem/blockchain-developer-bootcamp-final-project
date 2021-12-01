@@ -15,6 +15,71 @@ https://drive.google.com/file/d/1U_peWMq4pMI6GO8alMKRZXWSvEulSeAv/view?usp=shari
 - nodejs ^16
 - yarn
 
+## Directory structure
+```sh
+./
+├── README.md # Project descriptions and instructions
+├── README_previous.md # First schetching and scaffolding
+│
+├── assignments # Final project required docs.
+│   ├── avoiding_common_attacks.md
+│   ├── deployed_address.txt
+│   ├── design_pattern_decisions.md
+│   └── finalprojectchecklist.txt
+│
+├── client # Contains Frontend source codes.
+│   ├── README.md
+│   ├── firebase.json
+│   ├── package.json
+│   ├── public
+│   │   ├── favicon.ico
+│   │   ├── index.html
+│   │   ├── logo192.png
+│   │   ├── logo512.png
+│   │   ├── manifest.json
+│   │   └── robots.txt
+│   ├── src
+│   │   ├── App.css
+│   │   ├── App.test.tsx
+│   │   ├── App.tsx
+│   │   ├── components
+│   │   │   ├── DarkModeButton.tsx
+│   │   │   ├── LoginMessage.tsx
+│   │   │   ├── Map.tsx
+│   │   │   ├── MyDwgsModal.tsx
+│   │   │   ├── contracts.ts
+│   │   │   ├── mapConfig.ts
+│   │   │   └── mapUtils.tsx
+│   │   ├── fbConfig.ts
+│   │   ├── index.css
+│   │   ├── index.tsx
+│   │   ├── logo.svg
+│   │   ├── memo.ts
+│   │   ├── react-app-env.d.ts
+│   │   ├── reportWebVitals.ts
+│   │   └── setupTests.ts
+│   └── tsconfig.json
+│
+├── contracts # Contains solidity smart contract source codes.
+│   ├── Drawing.sol
+│   └── DrawingUpgradeTest.sol
+│
+├── hardhat.config.ts
+├── package.json
+│
+├── scripts # Contains contract deploying scripts.
+│   ├── check_base_fns.ts
+│   ├── deploy.ts
+│   ├── deploy_greeter.ts
+│   ├── upgrade.ts
+│   └── util.ts
+│
+├── test # Contains unit test script.
+│   └── index.ts
+│
+└── tsconfig.json
+```
+
 ## Setting Up
 
 ### 1. Clone this repo.
