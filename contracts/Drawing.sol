@@ -27,7 +27,7 @@ contract Drawing is
 
     /// @notice gets every token cid of msg.sender
     /// @return myDrawings array of msg.sender's token cid
-    function getMyDrawings() public view returns (string[] memory) {
+    function getMyDrawings() external view returns (string[] memory) {
         uint256 myDwgCounts = balanceOf(msg.sender);
         string[] memory myDrawings = new string[](myDwgCounts);
 

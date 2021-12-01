@@ -61,7 +61,7 @@ export const Load = ({
   accountLoggedIn,
   setDrawingData,
 }: ToolButtonCommonProps & LoadProps) => {
-  const { getMyDrawings } = useDrawingC()
+  const { getMyDrawings, getMyDrawingsFromExt } = useDrawingC()
   const [myDrawingsList, setMyDrawingsList] = useState<Array<any>>()
   const [isModalOn, setIsModalOn] = useState<boolean>()
 
@@ -85,6 +85,8 @@ export const Load = ({
           color={isDarkmode ? 'inherit' : 'primary'}
           onClick={async () => {
             const cids = await getMyDrawings()
+            console.log(cids)
+            console.log(await getMyDrawingsFromExt())
             if (cids.length) {
               setMyDrawingsList(
                 cids.map((cid: string) => {

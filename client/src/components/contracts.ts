@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 
 import Drawing from '../artifacts/contracts/Drawing.sol/Drawing.json'
-import { address } from '../memo'
+import DrawingReader from '../artifacts/contracts/DrawingReader.sol/DrawingReader.json'
+import { address, readerAddress } from '../memo'
 
 // console.log(process.env)
 
@@ -90,6 +91,11 @@ export const useEtherium = () => {
 export const useDrawingC = () => {
   const { account, signer } = useEtherium()
   const dwg = new ethers.Contract(address, Drawing.abi, signer)
+  const dwg_reader = new ethers.Contract(
+    readerAddress,
+    DrawingReader.abi,
+    signer
+  )
   // console.log(Drawing)
   // console.log(signer)
   // console.log(dwg)
@@ -102,7 +108,7 @@ export const useDrawingC = () => {
   const getMyDrawings = async () => {
     try {
       const res = await dwg.getMyDrawings()
-      console.log(res)
+      // console.log(res)
       return res
     } catch (error) {
       console.log(error)
@@ -113,5 +119,19 @@ export const useDrawingC = () => {
     }
   }
 
-  return { createDrawingToken, getMyDrawings }
+  const getMyDrawingsFromExt = async () => {
+    try {
+      const res = await dwg_reader.getMyDrawingsFrom()
+      // console.log(res)
+      return res
+    } catch (error) {
+      console.log(error)
+      alert(
+        `Can't find the contract. Maybe you should change your eth network to Ropsten or localhost`
+      )
+      return []
+    }
+  }
+
+  return { createDrawingToken, getMyDrawings, getMyDrawingsFromExt }
 }
