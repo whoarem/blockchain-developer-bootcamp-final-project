@@ -157,7 +157,7 @@ export const Save = ({
   drawingData,
 }: ToolButtonCommonProps & SaveProps) => {
   const { account, chainId } = useEtherium()
-  const { createDrawingToken } = useDrawingC()
+  const { createDrawingToken, getMyDrawings } = useDrawingC()
 
   return (
     <div
@@ -185,7 +185,13 @@ export const Save = ({
           ) {
             alert('Connect your account with metamask on local network.')
           } else if (drawingData && drawingData.features.length) {
-            saveDrawing(drawingData, account, createDrawingToken, ipfsNode)
+            saveDrawing(
+              drawingData,
+              account,
+              createDrawingToken,
+              getMyDrawings,
+              ipfsNode
+            )
           }
         }}
       >
@@ -199,14 +205,20 @@ const saveDrawing = async (
   dwg: GeoJSON.FeatureCollection,
   account: any,
   createDrawingToken: any,
+  getMyDrawings: any,
   ipfsNode: any
 ) => {
   let cid
   try {
     cid = await putDataToIpfs(dwg.features, ipfsNode)
-    console.log(cid)
+    // console.log(cid)
+    const currentAccountsCids = await getMyDrawings()
     if (account) {
-      createDrawingToken(account[0], cid)
+      if (currentAccountsCids.indexOf(cid) === -1) {
+        createDrawingToken(account[0], cid)
+      } else {
+        alert('You already have exactly same drawing.')
+      }
     }
   } catch (error) {
     console.log(error)

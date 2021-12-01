@@ -10,6 +10,7 @@ const main = async () => {
   console.log(address)
 
   // await dwg.mint(accounts[0])
+  // console.log(await dwg.unpause())
   await dwg.commitDrawing(
     accounts[0],
     'QmXScCiJ1uoaMajPE9KKGcEkeUKri2Piu81ta3GuhweUBL'
@@ -27,9 +28,10 @@ const main = async () => {
     console.log(await dwg.tokenByIndex(itemsCount - 1))
     console.log(await dwg.MINTER_ROLE())
     console.log(await dwg.PAUSER_ROLE())
-    console.log(await dwg.paused())
-    console.log(await dwg.pause())
-    console.log(await dwg.paused())
+    // console.log(await dwg.paused())
+    // console.log(await dwg.pause())
+    // console.log(await dwg.paused())
+    // console.log(await dwg.unpause())
   }
 }
 
