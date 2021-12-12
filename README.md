@@ -139,6 +139,7 @@ yarn start
 
 ## Tests
 ```sh
+# from project root
 yarn test
 ```
 
